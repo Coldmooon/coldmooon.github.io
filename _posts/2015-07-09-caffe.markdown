@@ -85,6 +85,7 @@ Undefined symbols for architecture x86_64:
 <https://github.com/CellScope/caffe/commit/954ac8f1fca889ada7194188db2cda3c300b0be0>
 
 在 `makefile` 中做如下更改
+
 ```
   $(MATLAB_DIR)/bin/mex $(MAT$(PROJECT)_SRC) \
       CXX="$(CXX)" \
@@ -92,6 +93,7 @@ Undefined symbols for architecture x86_64:
 -     CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS)" -output $@
 +     CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS) /usr/lib/libstdc++.dylib" -output $@
 ```
+
 ---------------------------------------------------
 
 
@@ -111,9 +113,11 @@ Undefined symbols for architecture x86_64:
 <https://github.com/BVLC/caffe/issues/915>
 做两个改动，
 一、
+
 change the `LIBRARY_DIRS` section of `Makefile.config` to read:
 `LIBRARY_DIRS := $(PYTHON_LIB) /Applications/MATLAB_R2014a.app/bin/maci64 /usr/local/lib /usr/lib`
 二、
+
 change the `mexopts.sh` to include `10.10` wherever `10.7` was there ( 4 places). 
 
 ------------------------------
