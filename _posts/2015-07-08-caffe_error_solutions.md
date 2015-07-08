@@ -1,54 +1,239 @@
----
-layout: post
-title:  "JavaScript 作用域和作用域链"
-date:   2015-05-20 14:06:05
-categories: Front-end JavaScript
-excerpt: JavaScript作用域和作用域链学习笔记。
----
+# Caffe 安装错误记录及解决办法
 
-* content
-{:toc}
+# 1）Fatal error : 'tr1/tuple' file not found 
+出现该问题有两种情况，可以先尝试下面的链接：
+https://github.com/BVLC/caffe/issues/1358
+如果不行，那说明是 Makefile 文件除了问题。一般来说，按照
+https://github.com/BVLC/caffe/pull/1740
+里的 33a56e0 那个 post 来修改 Makefile 文件就解决了。
+在出错之前，Makefile 相关内容如下：
+```
+ifeq ($(OSX), 1)
+  CXX := /usr/bin/clang++
+    CXXFLAGS += -stdlib=libstdc++
+    LINKFLAGS += -stdlib=libstdc++
+  # clang throws this warning for cuda headers
+  WARNINGS += -Wno-unneeded-internal-declaration
+  ifneq ($(findstring 10.10, $(shell sw_vers -productVersion)),)
+     CXXFLAGS += -stdlib=libc++
+     LINKFLAGS += -stdlib=libc++
+  endif
 
-## JavaScript 作用域 
+  # gtest needs to use its own tuple to not conflict with clang
+  CXXFLAGS += -DGTEST_USE_OWN_TR1_TUPLE=1
+  # boost::thread is called boost_thread-mt to mark multithreading on OS X
+  LIBRARIES += boost_thread-mt
+  NVCCFLAGS += -DOSX
+```
 
-作用域就是变量与函数的可访问范围。在JavaScript中，变量的作用域有全局作用域和局部作用域两种。
+然后修改成 33a56e0 的样子就成功了。
 
----
+-------------------------------------------------------
 
-### 全局作用域(Global Scope)
+# 2) make: *** [matlab/caffe/caffe.mexmaci64] Error 255
 
-在代码中任何地方都能访问到的对象拥有全局作用域，一般来说以下 3 种情形拥有全局作用域。
+解决方法
+https://github.com/BVLC/caffe/issues/1212
 
-1. 最外层函数和在最外层函数外面定义的变量拥有全局作用域
-2. 所有末定义直接赋值的变量自动声明为拥有全局作用域
-3. 所有window对象的属性拥有全局作用域   
-    window对象的内置属性都拥有全局作用域，例如window.name、window.location、window.top等。
+-------------------------
 
-### 局部作用域(Local Scope)
+# 3) make: *** [.build_release/tools/caffe.bin] Error 1
 
-和全局作用域相反，局部作用域一般只在固定的代码片段内可访问到，最常见的例如函数内部，所有在一些地方也会看到有人把这种作用域称为函数作用域
-。
+解决方法
+存在上一次安装的残留文件。用 `make clean` 清除之前的安装，重新编译即可
 
----
+---------------------------------
 
-## 作用域链(Scope Chain)
 
-在 JavaScript 中，函数也是对象，实际上，JavaScript 里一切都是对象。函数对象和其它对象一样，拥有可以通过代码访问的属性和一系列仅供 JavaScript 引擎访问的内部属性。其中一个内部属性是 [[Scope]]，由 ECMA-262 标准第三版定义，该内部属性包含了函数被创建的作用域中对象的集合，这个集合被称为函数的作用域链，它决定了哪些数据能被函数访问。
+# 4) make: *** [runtest] Trace/BPT trap: 5
 
-1. 在函数创建时，它的作用域链中会填入一个全局对象，该全局对象包含了所有全局变量。
-2. 函数执行时会创建一个称为“运行期上下文(execution context)”的内部对象，运行期上下文定义了函数执行时的环境。每个运行期上下文都有自己的作用域链，用于标识符解析，当运行期上下文被创建时，而它的作用域链初始化为当前运行函数的[[Scope]]所包含的对象。
-3. 这些值按照它们出现在函数中的顺序被复制到运行期上下文的作用域链中。它们共同组成了一个新的对象，叫“活动对象(activation object)”，该对象包含了函数的所有局部变量、命名参数、参数集合以及this，然后此对象会被推入作用域链的前端。
-4. 当运行期上下文被销毁，活动对象也随之销毁。
+解决方法：adna 没有安装 hdf5。重新安装 hdf5。
+https://github.com/BVLC/caffe/issues/454
 
-在函数执行过程中，每遇到一个变量，都会经历一次标识符解析过程以决定从哪里获取和存储数据。该过程从作用域链头部，也就是从活动对象开始搜索，查找同名的标识符，如果找到了就使用这个标识符对应的变量，如果没找到继续搜索作用域链中的下一个对象，如果搜索完所有对象都未找到，则认为该标识符未定义。函数执行过程中，每个标识符都要经历这样的搜索过程。
+--------------------------------
 
-### 代码优化
+# 5) 错误: 
+```
+Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "std::string::find(char, unsigned long) const", referenced from:
+      boost::basic_format<char, std::char_traits<char>, std::allocator<char> >::parse(std::string const&) in libcaffe.a(math_functions.o)
+      int boost::io::detail::upper_bound_from_fstring<std::string, std::ctype<char> >(std::string const&, std::string::value_type, std::ctype<char> const&, unsigned char) in libcaffe.a(math_functions.o)
+  "std::string::compare(char const*) const", referenced from:
+      _mexFunction in matcaffe.o
+      caffe::UpgradeV0PaddingLayers(caffe::NetParameter const&, caffe::NetParameter*) in libcaffe.a(upgrade_proto.o)
+      caffe::UpgradeLayerParameter(caffe::LayerParameter const&, caffe::LayerParameter*) in libcaffe.a(upgrade_proto.o)
+      caffe::UpgradeV0LayerType(std::string const&) in libcaffe.a(upgrade_proto.o)
+      caffe::Filler<float>* caffe::GetFiller<float>(caffe::FillerParameter const&) in libcaffe.a(dummy_data_layer.o)
+      caffe::Filler<double>* caffe::GetFiller<double>(caffe::FillerParameter const&) in libcaffe.a(dummy_data_layer.o)
+      caffe::WindowDataLayer<float>::DataLayerSetUp(std::vector<caffe::Blob<float>*, std::allocator<caffe::Blob<float>*> > const&, std::vector<caffe::Blob<float>*, std::allocator<caffe::Blob<float>*> >*) in libcaffe.a(window_data_layer.o)
+...
+```
 
-从作用域链的结构可以看出，在运行期上下文的作用域链中，标识符所在的位置越深，读写速度就会越慢。如上图所示，因为全局变量总是存在于运行期上下文作用域链的最末端，因此在标识符解析的时候，查找全局变量是最慢的。所以，在编写代码的时候应尽量少使用全局变量，尽可能使用局部变量。一个好的经验法则是：如果一个跨作用域的对象被引用了一次以上，则先把它存储到局部变量里再使用。
+解决方法：
+https://github.com/BVLC/caffe/issues/1212
+再看->
+https://github.com/BVLC/caffe/pull/1310
+然后看->
+https://github.com/CellScope/caffe/commit/954ac8f1fca889ada7194188db2cda3c300b0be0
 
----
+在 makefile 中做如下更改
+```
+ 	$(MATLAB_DIR)/bin/mex $(MAT$(PROJECT)_SRC) \
+ 			CXX="$(CXX)" \
+ 			CXXFLAGS="\$$CXXFLAGS $(MATLAB_CXXFLAGS)" \
+-			CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS)" -output $@
++			CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS) /usr/lib/libstdc++.dylib" -output $@
+```
+---------------------------------------------------
 
-## 参考资料
 
-* [鸟哥：Javascript作用域原理](http://www.laruence.com/2009/05/28/863.html)
-* [理解 JavaScript 作用域和作用域链](http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html)
+# 6）错误：
+```
+Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "_mxArrayToString", referenced from:
+      init(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+      read_mean(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+      _mexFunction in matcaffe.o
+  "_mxCreateCellArray_700", referenced from:
+      get_weights(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+```
+----------------
+解决方法：
+https://github.com/BVLC/caffe/issues/915
+做两个改动，
+一、
+change the `LIBRARY_DIRS` section of `Makefile.config` to read:
+`LIBRARY_DIRS := $(PYTHON_LIB) /Applications/MATLAB_R2014a.app/bin/maci64 /usr/local/lib /usr/lib`
+二、
+change the `mexopts.sh` to include `10.10` wherever `10.7` was there ( 4 places). 
+
+# 7） 按下述指引进行设置 makefile 
+https://github.com/BVLC/caffe/pull/1740
+->
+https://github.com/shelhamer/caffe/commit/ab839f5b2f5c93da34c2ab797ab2a64b62645976
+
+
+# 8）错误:
+```
+Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "google::protobuf::io::CodedOutputStream::WriteStringWithSizeToArray(std::string const&, unsigned char*)", referenced from:
+      caffe::Datum::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::FillerParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetStateRule::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+```
+解决办法：出处忘记了...
+@reking, I see boost errors, which I vaguely recall getting myself. If I recall, Caffe was seeing Matlab's internal libraries earlier in the library path than my local homebrew libraries in /usr/local/lib. Caffe might be trying to link Matlab's version of the boost library, which, needless to say, isn't compatible with Caffe.
+
+Try changing the LIBRARY_DIRS := ... line in your Makefile.config so that the /usr/local/lib directory is before your Matlab library directory.
+
+Mine looks like this:
+
+LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib $(MATLAB_DIR)/bin/maci64 /usr/lib
+
+----------------------------
+
+# 9) 错误:
+```
+Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "google::protobuf::io::CodedOutputStream::WriteStringWithSizeToArray(std::string const&, unsigned char*)", referenced from:
+      caffe::Datum::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::FillerParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetStateRule::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+```
+解决办法：
+9） 的错误和 8）很相似。但是我注意到错误提示：
+clang++ .build_release/src/caffe/proto/caffe.pb.cc -stdlib=libstdc++ -DGTEST_USE_OWN_TR1_TUPLE=1
+
+有这么一行。在这一行里，有 `-stdlib=libstdc++` 字段。如果其他依赖库用 libc++ 编译的话，那么就会出现 9）的错误。解决办法是在 Makefile 文件里，将带有 libstdc++ 的行注释掉即可。
+
+2015.7.2 补充。今天在编译老版本 caffe-rc2 版本的时候，又出现了一次该错误。但当时我是把最新版本的 makefile.config 文件给复制过来用了，并没有重新填写。所以，考虑到这个情况。我又重新解压了一次 caffe-rc2.zip 压缩包，重新手动填写了一次 makefile.config 文件。再次编译就好了。
+
+--------------------------------
+
+# 10) Error with mexopencv
+
+出现这种错误的原因解释在下面链接的 OSX 一节：
+http://kyamagu.github.io/mexopencv/
+解决方法上面链接也给了。但是下面的链接讨论的更为详细：
+https://github.com/kyamagu/mexopencv/issues/71
+
+我自己的解决办法是，在 terminal 里输入
+```
+DYLD_INSERT_LIBRARIES=/usr/local/lib/libopencv_highgui.2.4.dylib:/usr/local/lib/libtiff.5.dylib /Applications/MATLAB_R2014b.app/bin/matlab
+```
+
+因为，`matlab` 运行 `RCNN` 代码时提示 `libopencv_highgui.2.4.dylib` 使用的是 `Matlab` 自己的。所以就在终端里插入系统库。
+而 `libopencv_highgui.2.4.dylib` 系统库又要调用 `libtiff.5.dylib`， 所以再继续插入 `libtiff.5.dylib`。
+
+# 11) Issue with libopenblas.so.0
+
+在编译 `caffe` 中的最后一步，运行 `make runtest` 时，出现了 `caffe` 无法找到 `libopenblas.so.0` 的错误。出现这个错误的原因是，从源码编译 `openblas` 时手动更改了安装路径。
+解决方法是，建立一个软连接到 `openblas` 的默认安装路径即可。
+```
+cd /opt
+sudo ln -s /usr/local/OpenBLAS/ .
+```
+
+然后将 `openblas` 的库所在位置添加到系统环境变量 `LD_LIBRARY_PATH`
+```
+export LD_LIBRARY_PATH=/opt/OpenBLAS/lib/
+sudo ldconfig
+```
+
+这时，在编译就不会出错了。
+
+参考 https://github.com/sermanet/OverFeat/issues/10
+
+-------------------------------------------------
+
+# 12) 找不到 GLIBCXX_3.4.20 文件
+```
+Invalid MEX-file '/home/coldmoon/ComputerVision/Caffe/matlab/caffe/caffe.mexa64':
+/home/coldmoon/MATLAB/R2014b/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.20'
+not found (required by /home/coldmoon/ComputerVision/Caffe/matlab/caffe/caffe.mexa64)
+```
+
+参考 
+http://askubuntu.com/questions/575505/glibcxx-3-4-20-not-found-how-to-fix-this-error
+http://stackoverflow.com/questions/16605623/where-can-i-get-a-copy-of-the-file-libstdc-so-6-0-15
+
+上面两个链接指出的是，在 `libstdc++.so.6` 中无法找到 `GLIBCXX_3.4.20` 时的解决办法。但在我系统里 OSX(10.10)，情况跟上述不一样。
+通过下列命令
+`find / -name "libstdc++.so.6"` 可以找到官方提供的库所在路径。
+然后进入该路径:
+`strings ./libstdc++.so.6 | grep GLIBCXX`
+可以看到，官方提供的 `libstdc++.so.6` 已经包含了  `GLIBCXX_3.4.20`。这说明 `caffe.mexa64` 所使用的库并非官方的库，而是 `matlab` 自己提供的库
+根据 https://github.com/rbgirshick/rcnn/issues/13 的说法，这是 `LD_LIBRARY_PATH` 设置不当造成的。导致了程序优先寻找 `matlab` 目录下的 `libstdc++.so.6`。至于 `matlab` 究竟引用了哪里的库，可以通过 `ldd` 命令查看。
+根据 https://github.com/rbgirshick/rcnn/issues/9
+在终端下，输入 `ldd caffe.mexa64`，可以看到一堆所引用的库路径。而在 `matlab` 的命令窗口中输入 `!ldd caffe.mexa64` 则可以看到 `matlab` 运行
+`caffe` 函数时，究竟在引用哪些库。不出意外的发现，`matlab` 引用的库路径果真都是 `matlab` 自己的。因为其中列出一条：
+`libstdc++.so.6 => /home/coldmoon/MATLAB/R2014b/sys/os/glnxa64/libstdc++.so.6 (0x00007f2664bb6000)`
+再次运行 `strings ./libstdc++.so.6 | grep GLIBCXX` ，就可以发现，果真没有 `GLIBCXX_3.4.20`. 
+
+解决方法，参考 
+https://github.com/BVLC/caffe/issues/655 
+https://github.com/kyamagu/mexopencv/issues/64
+https://github.com/kyamagu/mexopencv/issues/62#issuecomment-15054244
+
+当我把所有!ldd caffe.mexa64 输出的结果都放到 LD_PRELOAD 中是，!ldd 这个命令会出错，即使不给它参数也会出错。因此，
+我只把 libstdc++ 放到了这个环境变量里。最终形成一个脚本文件来运行 matlab：
+
+```
+#!/bin/bash
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+echo "LDPRELOAD is:"
+echo $LD_PRELOAD
+/home/coldmoon/MATLAB/R2014b/bin/matlab
+```
