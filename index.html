@@ -1,64 +1,298 @@
----
-layout: default
----
-<div id="index" class="row">
-  <div class="col-sm-9">
-    <div class="post-area">
-      <!-- small button -->
-     <!--  <p class="pull-right visible-xs">
-       <button>toggle</button>
-     </p> -->
-      <div class="post-list-header">
-        Posts
-      </div>
-      <div class="post-list-body">
-        
-        <div class="all-posts" post-cate="All">
-          {% for post in site.posts %}
-            <a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">
-              <h2>
-              {{ post.title }}
-              </h2>
-              <span class="">{{ post.date | date: "%b %-d, %Y" }}</span>
-            </a>
-          {% endfor %}
-        </div>
-        <!-- <div class="posts-in-categories"> -->
-        {% for category in site.categories %}
-          <div post-cate="{{category | first}}">
-            {% for posts in category  %}
-              {% for post in posts %}
-                {% if post.url %}
-                  <a href="{{ post.url }}" class="post-list-item">
-                    <h2>
-                    {{ post.title }}
-                    </h2>
-                    <span class="">{{ post.date | date: "%b %-d, %Y" }}</span>
-                  </a>
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          </div>
-        {% endfor %}
-        
-        <!-- </div> -->
-      </div>
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Caffe 安装出错记录与解决办法 : Caffe">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Caffe 安装出错记录与解决办法</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Coldmooon">View on GitHub</a>
+
+          <h1 id="project_title">Caffe 安装出错记录与解决办法</h1>
+          <h2 id="project_tagline">Caffe</h2>
+
+        </header>
     </div>
-  </div>
-  <div class="col-sm-3">
-    <div class="shadow-corner-curl hidden-xs">
-      <div class="categories-list-header">
-        Categories
-      </div>
-      
-      <a href="javascript:;" class="categories-list-item" cate="All">
-        All<span class="my-badge"> {{site.categories | size}}</span>
-      </a>
-      {% for category in site.categories %}
-        <a href="javascript:;" class="categories-list-item" cate="{{ category | first }}">
-          {{ category | first }} <span class="my-badge">{{ category | last | size }}</span>
-        </a>
-      {% endfor %}
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="caffe-安装错误记录及解决办法" class="anchor" href="#caffe-%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF%E8%AE%B0%E5%BD%95%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>Caffe 安装错误记录及解决办法</h1>
+
+<h1>
+<a id="1fatal-error--tr1tuple-file-not-found" class="anchor" href="#1fatal-error--tr1tuple-file-not-found" aria-hidden="true"><span class="octicon octicon-link"></span></a>1）Fatal error : 'tr1/tuple' file not found</h1>
+
+<p>出现该问题有两种情况，可以先尝试下面的链接：
+<a href="https://github.com/BVLC/caffe/issues/1358">https://github.com/BVLC/caffe/issues/1358</a>
+如果不行，那说明是 Makefile 文件除了问题。一般来说，按照
+<a href="https://github.com/BVLC/caffe/pull/1740">https://github.com/BVLC/caffe/pull/1740</a>
+里的 33a56e0 那个 post 来修改 Makefile 文件就解决了。
+在出错之前，Makefile 相关内容如下：</p>
+
+<pre><code>ifeq ($(OSX), 1)
+  CXX := /usr/bin/clang++
+    CXXFLAGS += -stdlib=libstdc++
+    LINKFLAGS += -stdlib=libstdc++
+  # clang throws this warning for cuda headers
+  WARNINGS += -Wno-unneeded-internal-declaration
+  ifneq ($(findstring 10.10, $(shell sw_vers -productVersion)),)
+     CXXFLAGS += -stdlib=libc++
+     LINKFLAGS += -stdlib=libc++
+  endif
+
+  # gtest needs to use its own tuple to not conflict with clang
+  CXXFLAGS += -DGTEST_USE_OWN_TR1_TUPLE=1
+  # boost::thread is called boost_thread-mt to mark multithreading on OS X
+  LIBRARIES += boost_thread-mt
+  NVCCFLAGS += -DOSX
+</code></pre>
+
+<p>然后修改成 33a56e0 的样子就成功了。</p>
+
+<hr>
+
+<h1>
+<a id="2-make--matlabcaffecaffemexmaci64-error-255" class="anchor" href="#2-make--matlabcaffecaffemexmaci64-error-255" aria-hidden="true"><span class="octicon octicon-link"></span></a>2) make: *** [matlab/caffe/caffe.mexmaci64] Error 255</h1>
+
+<p>解决方法
+<a href="https://github.com/BVLC/caffe/issues/1212">https://github.com/BVLC/caffe/issues/1212</a></p>
+
+<hr>
+
+<h1>
+<a id="3-make--build_releasetoolscaffebin-error-1" class="anchor" href="#3-make--build_releasetoolscaffebin-error-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>3) make: *** [.build_release/tools/caffe.bin] Error 1</h1>
+
+<p>解决方法
+存在上一次安装的残留文件。用 <code>make clean</code> 清除之前的安装，重新编译即可</p>
+
+<hr>
+
+<h1>
+<a id="4-make--runtest-tracebpt-trap-5" class="anchor" href="#4-make--runtest-tracebpt-trap-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>4) make: *** [runtest] Trace/BPT trap: 5</h1>
+
+<p>解决方法：adna 没有安装 hdf5。重新安装 hdf5。
+<a href="https://github.com/BVLC/caffe/issues/454">https://github.com/BVLC/caffe/issues/454</a></p>
+
+<hr>
+
+<h1>
+<a id="5-错误" class="anchor" href="#5-%E9%94%99%E8%AF%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>5) 错误:</h1>
+
+<pre><code>Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "std::string::find(char, unsigned long) const", referenced from:
+      boost::basic_format&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;::parse(std::string const&amp;) in libcaffe.a(math_functions.o)
+      int boost::io::detail::upper_bound_from_fstring&lt;std::string, std::ctype&lt;char&gt; &gt;(std::string const&amp;, std::string::value_type, std::ctype&lt;char&gt; const&amp;, unsigned char) in libcaffe.a(math_functions.o)
+  "std::string::compare(char const*) const", referenced from:
+      _mexFunction in matcaffe.o
+      caffe::UpgradeV0PaddingLayers(caffe::NetParameter const&amp;, caffe::NetParameter*) in libcaffe.a(upgrade_proto.o)
+      caffe::UpgradeLayerParameter(caffe::LayerParameter const&amp;, caffe::LayerParameter*) in libcaffe.a(upgrade_proto.o)
+      caffe::UpgradeV0LayerType(std::string const&amp;) in libcaffe.a(upgrade_proto.o)
+      caffe::Filler&lt;float&gt;* caffe::GetFiller&lt;float&gt;(caffe::FillerParameter const&amp;) in libcaffe.a(dummy_data_layer.o)
+      caffe::Filler&lt;double&gt;* caffe::GetFiller&lt;double&gt;(caffe::FillerParameter const&amp;) in libcaffe.a(dummy_data_layer.o)
+      caffe::WindowDataLayer&lt;float&gt;::DataLayerSetUp(std::vector&lt;caffe::Blob&lt;float&gt;*, std::allocator&lt;caffe::Blob&lt;float&gt;*&gt; &gt; const&amp;, std::vector&lt;caffe::Blob&lt;float&gt;*, std::allocator&lt;caffe::Blob&lt;float&gt;*&gt; &gt;*) in libcaffe.a(window_data_layer.o)
+...
+</code></pre>
+
+<p>解决方法：
+<a href="https://github.com/BVLC/caffe/issues/1212">https://github.com/BVLC/caffe/issues/1212</a>
+再看-&gt;
+<a href="https://github.com/BVLC/caffe/pull/1310">https://github.com/BVLC/caffe/pull/1310</a>
+然后看-&gt;
+<a href="https://github.com/CellScope/caffe/commit/954ac8f1fca889ada7194188db2cda3c300b0be0">https://github.com/CellScope/caffe/commit/954ac8f1fca889ada7194188db2cda3c300b0be0</a></p>
+
+<p>在 makefile 中做如下更改</p>
+
+<pre><code>    $(MATLAB_DIR)/bin/mex $(MAT$(PROJECT)_SRC) \
+            CXX="$(CXX)" \
+            CXXFLAGS="\$$CXXFLAGS $(MATLAB_CXXFLAGS)" \
+-           CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS)" -output $@
++           CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS) /usr/lib/libstdc++.dylib" -output $@
+</code></pre>
+
+<hr>
+
+<h1>
+<a id="6错误" class="anchor" href="#6%E9%94%99%E8%AF%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>6）错误：</h1>
+
+<pre><code>Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "_mxArrayToString", referenced from:
+      init(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+      read_mean(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+      _mexFunction in matcaffe.o
+  "_mxCreateCellArray_700", referenced from:
+      get_weights(int, mxArray_tag**, int, mxArray_tag const**) in matcaffe.o
+</code></pre>
+
+<hr>
+
+<p>解决方法：
+<a href="https://github.com/BVLC/caffe/issues/915">https://github.com/BVLC/caffe/issues/915</a>
+做两个改动，
+一、
+change the <code>LIBRARY_DIRS</code> section of <code>Makefile.config</code> to read:
+<code>LIBRARY_DIRS := $(PYTHON_LIB) /Applications/MATLAB_R2014a.app/bin/maci64 /usr/local/lib /usr/lib</code>
+二、
+change the <code>mexopts.sh</code> to include <code>10.10</code> wherever <code>10.7</code> was there ( 4 places). </p>
+
+<h1>
+<a id="7-按下述指引进行设置-makefile" class="anchor" href="#7-%E6%8C%89%E4%B8%8B%E8%BF%B0%E6%8C%87%E5%BC%95%E8%BF%9B%E8%A1%8C%E8%AE%BE%E7%BD%AE-makefile" aria-hidden="true"><span class="octicon octicon-link"></span></a>7） 按下述指引进行设置 makefile</h1>
+
+<p><a href="https://github.com/BVLC/caffe/pull/1740">https://github.com/BVLC/caffe/pull/1740</a>
+-&gt;
+<a href="https://github.com/shelhamer/caffe/commit/ab839f5b2f5c93da34c2ab797ab2a64b62645976">https://github.com/shelhamer/caffe/commit/ab839f5b2f5c93da34c2ab797ab2a64b62645976</a></p>
+
+<h1>
+<a id="8错误" class="anchor" href="#8%E9%94%99%E8%AF%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>8）错误:</h1>
+
+<pre><code>Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "google::protobuf::io::CodedOutputStream::WriteStringWithSizeToArray(std::string const&amp;, unsigned char*)", referenced from:
+      caffe::Datum::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::FillerParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetStateRule::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+</code></pre>
+
+<p>解决办法：出处忘记了...
+<a href="https://github.com/reking" class="user-mention">@reking</a>, I see boost errors, which I vaguely recall getting myself. If I recall, Caffe was seeing Matlab's internal libraries earlier in the library path than my local homebrew libraries in /usr/local/lib. Caffe might be trying to link Matlab's version of the boost library, which, needless to say, isn't compatible with Caffe.</p>
+
+<p>Try changing the LIBRARY_DIRS := ... line in your Makefile.config so that the /usr/local/lib directory is before your Matlab library directory.</p>
+
+<p>Mine looks like this:</p>
+
+<p>LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib $(MATLAB_DIR)/bin/maci64 /usr/lib</p>
+
+<hr>
+
+<h1>
+<a id="9-错误" class="anchor" href="#9-%E9%94%99%E8%AF%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>9) 错误:</h1>
+
+<pre><code>Building with 'Xcode Clang++'.
+Undefined symbols for architecture x86_64:
+  "google::protobuf::io::CodedOutputStream::WriteStringWithSizeToArray(std::string const&amp;, unsigned char*)", referenced from:
+      caffe::Datum::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::FillerParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverParameter::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::SolverState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetState::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+      caffe::NetStateRule::SerializeWithCachedSizesToArray(unsigned char*) const in libcaffe.a(caffe.pb.o)
+</code></pre>
+
+<p>解决办法：
+9） 的错误和 8）很相似。但是我注意到错误提示：
+clang++ .build_release/src/caffe/proto/caffe.pb.cc -stdlib=libstdc++ -DGTEST_USE_OWN_TR1_TUPLE=1</p>
+
+<p>有这么一行。在这一行里，有 <code>-stdlib=libstdc++</code> 字段。如果其他依赖库用 libc++ 编译的话，那么就会出现 9）的错误。解决办法是在 Makefile 文件里，将带有 libstdc++ 的行注释掉即可。</p>
+
+<p>2015.7.2 补充。今天在编译老版本 caffe-rc2 版本的时候，又出现了一次该错误。但当时我是把最新版本的 makefile.config 文件给复制过来用了，并没有重新填写。所以，考虑到这个情况。我又重新解压了一次 caffe-rc2.zip 压缩包，重新手动填写了一次 makefile.config 文件。再次编译就好了。</p>
+
+<hr>
+
+<h1>
+<a id="10-error-with-mexopencv" class="anchor" href="#10-error-with-mexopencv" aria-hidden="true"><span class="octicon octicon-link"></span></a>10) Error with mexopencv</h1>
+
+<p>出现这种错误的原因解释在下面链接的 OSX 一节：
+<a href="http://kyamagu.github.io/mexopencv/">http://kyamagu.github.io/mexopencv/</a>
+解决方法上面链接也给了。但是下面的链接讨论的更为详细：
+<a href="https://github.com/kyamagu/mexopencv/issues/71">https://github.com/kyamagu/mexopencv/issues/71</a></p>
+
+<p>我自己的解决办法是，在 terminal 里输入</p>
+
+<pre><code>DYLD_INSERT_LIBRARIES=/usr/local/lib/libopencv_highgui.2.4.dylib:/usr/local/lib/libtiff.5.dylib /Applications/MATLAB_R2014b.app/bin/matlab
+</code></pre>
+
+<p>因为，<code>matlab</code> 运行 <code>RCNN</code> 代码时提示 <code>libopencv_highgui.2.4.dylib</code> 使用的是 <code>Matlab</code> 自己的。所以就在终端里插入系统库。
+而 <code>libopencv_highgui.2.4.dylib</code> 系统库又要调用 <code>libtiff.5.dylib</code>， 所以再继续插入 <code>libtiff.5.dylib</code>。</p>
+
+<h1>
+<a id="11-issue-with-libopenblasso0" class="anchor" href="#11-issue-with-libopenblasso0" aria-hidden="true"><span class="octicon octicon-link"></span></a>11) Issue with libopenblas.so.0</h1>
+
+<p>在编译 <code>caffe</code> 中的最后一步，运行 <code>make runtest</code> 时，出现了 <code>caffe</code> 无法找到 <code>libopenblas.so.0</code> 的错误。出现这个错误的原因是，从源码编译 <code>openblas</code> 时手动更改了安装路径。
+解决方法是，建立一个软连接到 <code>openblas</code> 的默认安装路径即可。</p>
+
+<pre><code>cd /opt
+sudo ln -s /usr/local/OpenBLAS/ .
+</code></pre>
+
+<p>然后将 <code>openblas</code> 的库所在位置添加到系统环境变量 <code>LD_LIBRARY_PATH</code></p>
+
+<pre><code>export LD_LIBRARY_PATH=/opt/OpenBLAS/lib/
+sudo ldconfig
+</code></pre>
+
+<p>这时，在编译就不会出错了。</p>
+
+<p>参考 <a href="https://github.com/sermanet/OverFeat/issues/10">https://github.com/sermanet/OverFeat/issues/10</a></p>
+
+<hr>
+
+<h1>
+<a id="12-找不到-glibcxx_3420-文件" class="anchor" href="#12-%E6%89%BE%E4%B8%8D%E5%88%B0-glibcxx_3420-%E6%96%87%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>12) 找不到 GLIBCXX_3.4.20 文件</h1>
+
+<pre><code>Invalid MEX-file '/home/coldmoon/ComputerVision/Caffe/matlab/caffe/caffe.mexa64':
+/home/coldmoon/MATLAB/R2014b/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.20'
+not found (required by /home/coldmoon/ComputerVision/Caffe/matlab/caffe/caffe.mexa64)
+</code></pre>
+
+<p>参考 
+<a href="http://askubuntu.com/questions/575505/glibcxx-3-4-20-not-found-how-to-fix-this-error">http://askubuntu.com/questions/575505/glibcxx-3-4-20-not-found-how-to-fix-this-error</a>
+<a href="http://stackoverflow.com/questions/16605623/where-can-i-get-a-copy-of-the-file-libstdc-so-6-0-15">http://stackoverflow.com/questions/16605623/where-can-i-get-a-copy-of-the-file-libstdc-so-6-0-15</a></p>
+
+<p>上面两个链接指出的是，在 <code>libstdc++.so.6</code> 中无法找到 <code>GLIBCXX_3.4.20</code> 时的解决办法。但在我系统里 OSX(10.10)，情况跟上述不一样。
+通过下列命令
+<code>find / -name "libstdc++.so.6"</code> 可以找到官方提供的库所在路径。
+然后进入该路径:
+<code>strings ./libstdc++.so.6 | grep GLIBCXX</code>
+可以看到，官方提供的 <code>libstdc++.so.6</code> 已经包含了  <code>GLIBCXX_3.4.20</code>。这说明 <code>caffe.mexa64</code> 所使用的库并非官方的库，而是 <code>matlab</code> 自己提供的库
+根据 <a href="https://github.com/rbgirshick/rcnn/issues/13">https://github.com/rbgirshick/rcnn/issues/13</a> 的说法，这是 <code>LD_LIBRARY_PATH</code> 设置不当造成的。导致了程序优先寻找 <code>matlab</code> 目录下的 <code>libstdc++.so.6</code>。至于 <code>matlab</code> 究竟引用了哪里的库，可以通过 <code>ldd</code> 命令查看。
+根据 <a href="https://github.com/rbgirshick/rcnn/issues/9">https://github.com/rbgirshick/rcnn/issues/9</a>
+在终端下，输入 <code>ldd caffe.mexa64</code>，可以看到一堆所引用的库路径。而在 <code>matlab</code> 的命令窗口中输入 <code>!ldd caffe.mexa64</code> 则可以看到 <code>matlab</code> 运行
+<code>caffe</code> 函数时，究竟在引用哪些库。不出意外的发现，<code>matlab</code> 引用的库路径果真都是 <code>matlab</code> 自己的。因为其中列出一条：
+<code>libstdc++.so.6 =&gt; /home/coldmoon/MATLAB/R2014b/sys/os/glnxa64/libstdc++.so.6 (0x00007f2664bb6000)</code>
+再次运行 <code>strings ./libstdc++.so.6 | grep GLIBCXX</code> ，就可以发现，果真没有 <code>GLIBCXX_3.4.20</code>. </p>
+
+<p>解决方法，参考 
+<a href="https://github.com/BVLC/caffe/issues/655">https://github.com/BVLC/caffe/issues/655</a> 
+<a href="https://github.com/kyamagu/mexopencv/issues/64">https://github.com/kyamagu/mexopencv/issues/64</a>
+<a href="https://github.com/kyamagu/mexopencv/issues/62#issuecomment-15054244">https://github.com/kyamagu/mexopencv/issues/62#issuecomment-15054244</a></p>
+
+<p>当我把所有!ldd caffe.mexa64 输出的结果都放到 LD_PRELOAD 中是，!ldd 这个命令会出错，即使不给它参数也会出错。因此，
+我只把 libstdc++ 放到了这个环境变量里。最终形成一个脚本文件来运行 matlab：</p>
+
+<pre><code>#!/bin/bash
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+echo "LDPRELOAD is:"
+echo $LD_PRELOAD
+/home/coldmoon/MATLAB/R2014b/bin/matlab
+</code></pre>
+      </section>
     </div>
-  </div>
-</div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
