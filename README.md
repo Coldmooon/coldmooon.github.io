@@ -1,5 +1,3 @@
-#Clean Blog by Start Bootstrap - Jekyll Version
-
-Blog Style references:
+# Blog Style references:
 https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll
 https://github.com/Huxpro/huxpro.github.io
