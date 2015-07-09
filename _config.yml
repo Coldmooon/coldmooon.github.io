@@ -1,35 +1,27 @@
-name: Your New Jekyll Site
-description: Blogging about stuffs
-meta_description: "Your New Jekyll Site, Blogging about stuffs"
+# Site settings
+title: Coldmooon's Blog
+header-img: img/home-bg.jpg
+email: xxx@xxx.com
+description: ""
+baseurl: ""
+url: "http://coldmooon.github.io"
+# twitter_username: SBootstrap
+github_username:  coldmooon
+# facebook_username:  IronSummitMedia
 
-aboutPage: true
+# Build settings
+markdown: kramdown 
 
-markdown: redcarpet
+# markdown: redcarpet
+# redcarpet can auto highlight code, but the lack of header-id make the catalog impossible 
+
 highlighter: pygments
-
+permalink: pretty
 paginate: 20
-baseurl: /
-domain_name: 'http://yourblog-domain.com'
-google_analytics: 'UA-XXXXXXXX-X'
-disqus_shortname: 'your-disqus-shortname'
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 
-# Details for the RSS feed generator
-url:            'http://your-blog-url.example.com'
-author:         'Your Name'
-authorTwitter:  'YourTwitterUsername'
+# use Github Flavored Markdown !important
+# document: http://jekyllrb.com/docs/configuration/#kramdown
 
-permalink:       /:year/:title/
-
-defaults:
-    -
-        scope:
-            path: "" # empty string for all files
-            type: pages
-        values:
-            layout: default
-    -
-        scope:
-            path: "" # empty string for all files
-            type: posts
-        values:
-            layout: post
+kramdown:
+  input: GFM

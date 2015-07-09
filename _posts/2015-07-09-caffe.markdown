@@ -1,10 +1,13 @@
 ---
-title:  "Caffe 安装错误记录及解决办法"
-date:   2015-07-09 00:52:00
-description: 
+layout:     post
+title:      "Caffe 安装错误记录及解决办法"
+date:       2015-07-09 00:52:00
+author:     "Coldmooon"
+header-img: "img/home-bg.jpg"
 ---
 
 ## 1）Fatal error : 'tr1/tuple' file not found 
+
 出现该问题有两种情况，可以先尝试下面的链接：
 <https://github.com/BVLC/caffe/issues/1358>
 如果不行，那说明是 `Makefile` 文件除了问题。一般来说，按照
