@@ -121,6 +121,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LD_LIBRARY_PATH
 
 ## 六、安装 anaconda
 强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 `accelerate anaconda`，在矩阵运算的时候，可以启用并行计算，速度快很多。
+
 ```
 ./Anaconda-2.3.0-Linux-x86_64.sh
 conda update conda
