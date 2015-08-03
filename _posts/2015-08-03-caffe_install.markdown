@@ -34,6 +34,15 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install g++-4.9
 ```
+这样安装后，系统默认还是使用 `gcc 4.8`，必须要重新做一下软连接
+
+```
+sudo ln -sf /usr/bin/gcc-4.9 /usr/bin/gcc
+sudo ln -sf /usr/bin/gcc-ar-4.9 /usr/bin/gcc-ar
+sudo ln -sf /usr/bin/gcc-ranlib-4.9 /usr/bin/gcc-ranlib
+```
+然后，可以用 `gcc -v` 来查看 `gcc` 的版本。
+
 参考链接:
 <http://askubuntu.com/questions/428198/getting-installing-gcc-g-4-9-on-ubuntu>
 
