@@ -123,10 +123,10 @@ export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LD_LIBRARY_PATH
 强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 `accelerate anaconda`，在矩阵运算的时候，可以启用并行计算，速度快很多。
 
 ```
-./Anaconda-2.3.0-Linux-x86_64.sh
-conda update conda
-conda install accelerate
-conda install iopro
+   ./Anaconda-2.3.0-Linux-x86_64.sh
+   conda update conda
+   conda install accelerate
+   conda install iopro
 ```
 接下来拷贝 `anaconda` 的许可文件到用户主目录
 
@@ -166,7 +166,8 @@ subl ~/.bashrc
 ```
 alias opencv="/path/to/xx.sh"
 ```
-以后要编译 `opencv` 程序的时候，只需要在终端里输入 `opencv xxx.cpp` 即可。无需在敲入繁琐的 `pkg-config` 前后缀。例如, 直接在终端里键入 `opencv` 命令，会提示:
+以后要编译 `opencv` 程序的时候，只需要在终端里输入 `opencv xxx.cpp` 即可。无需在敲入繁琐的 `pkg-config` 前后缀。例如, 直接在终端里键入 `opencv` 命令，会提示
+
 ```
 compiling 
 Please compile only .c or .cpp files
