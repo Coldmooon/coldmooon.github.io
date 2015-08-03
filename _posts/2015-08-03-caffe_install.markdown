@@ -159,19 +159,23 @@ echo "Output file => ${1%.*}"
 ```
 讲上述代码保存为一个 `xxx.sh` 文件。然后在终端里给该文件开启可执行权限 `sudo chmod 777 xxx.sh`
 接下来在 `.bashrc` 中建立一个 `alias` 来指向 `xxx.sh`
+   
 ```
 subl ~/.bashrc
 ```
-在 `.bashrc` 中键入:
+   
+在 `.bashrc` 中键入
+
 ```
 alias opencv="/path/to/xx.sh"
 ```
+
 以后要编译 `opencv` 程序的时候，只需要在终端里输入 `opencv xxx.cpp` 即可。无需在敲入繁琐的 `pkg-config` 前后缀。例如, 直接在终端里键入 `opencv` 命令，会提示
 
 ```
-   compiling 
-   Please compile only .c or .cpp files
-   Output file => 
+compiling 
+Please compile only .c or .cpp files
+Output file => 
 ```
 
 ----------------------
