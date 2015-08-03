@@ -103,10 +103,10 @@ sudo apt-get update
 sudo apt-get install cuda
 ```
 安装完成后，再设置环境
-`````
+```
 $ export PATH=/usr/local/cuda-7.0/bin:$PATH
 $ export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LD_LIBRARY_PATH
-`````
+```
 
 另外，我发现上面的 `export` 操作在我电脑上不起作用。所以我直接把 `lib64` 里的库文件软连接到了 `/usr/local/lib/` 下 
 
