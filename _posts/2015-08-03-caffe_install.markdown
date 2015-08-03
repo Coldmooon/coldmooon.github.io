@@ -141,7 +141,8 @@ conda update ipython-notebook
 
 ## 七、安装 Opencv 2.4.11
 喜欢 `opencv 3.0` 的，可以选择安装 `opencv 3.0`。这里我继续使用 `Opencv 2.4.11`。
-`Opencv` 的安装过程较繁琐，切网上已经有了大量的安装教程，所以这里不赘述了。这里提供一个编译 `Opencv` 程序的脚本:
+`Opencv` 的安装过程较繁琐，切网上已经有了大量的安装教程，所以这里不赘述了。这里提供一个编译 `Opencv` 程序的脚本
+
 ```
 echo "compiling $1"
 if [[ $1 == *.c ]]
