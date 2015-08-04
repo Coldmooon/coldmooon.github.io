@@ -175,10 +175,13 @@ sudo ldconfig
 
 
 ## 六、安装 anaconda
-强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，`ipython`, `mkl`, `numpy`等预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 `accelerate anaconda`，在矩阵运算的时候，可以启用并行计算，速度快很多。
+强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，`ipython`, `mkl`, `numpy`等都预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 `anaconda accelerate`，在矩阵运算的时候，可以启用并行计算，速度快很多。
 
 ```
+安装 anaconda:
 ./Anaconda-2.3.0-Linux-x86_64.sh
+
+安装 accelerate:
 conda update conda
 conda install accelerate
 conda install iopro
@@ -198,7 +201,7 @@ conda update ipython-qtconsole
 下面测试一下 `anaconda python` 的功能，首先在终端下启用 `ipython-notebook`
 
 ```
-ipython notebook
+$ ipython notebook
 ``` 
 然后新建一个 `ipynb` 文件。在 `cell` 中输入
 
@@ -263,6 +266,8 @@ alias opencv="/path/to/xxx.sh"
 以后要编译 `opencv` 程序的时候，只需要在终端里输入 `opencv xxx.cpp` 即可。无需敲入繁琐的 `pkg-config` 前后缀。例如, 直接在终端里键入 `opencv` 命令，会提示
 
 ```
+$ opencv
+
 compiling 
 Please compile only .c or .cpp files
 Output file => 
@@ -271,13 +276,13 @@ Output file =>
 ----------------------
 
 ## 八、安装 Matlab
-安装过程这里不赘述，重点说下安装后做的事:
+安装 `matlab` 的过程这里不赘述，重点说下安装后做的事:
 提供两种方法实现在 `terminal` 中启动 `matlab`
 
 1） 将 `matlab` 的可执行程序加入到系统的环境变量中
 
 ```
-export PATH="/path/to/matlab"
+export PATH="/path/to/matlab:$PATH"
 ```
 2） 与 `opencv` 相同，在 `.bashrc` 中建立一个 `matlab` alias:
 
@@ -294,7 +299,7 @@ alias rcnn="DYLD_INSERT_LIBRARIES=/usr/local/lib/libopencv_highgui.2.4.dylib:/us
 
 ----------------------------
 
-## 九、安装 MKL or Openblas
+## 九、安装 MKL, Openblas or Atlas
 
 ### -- MKL
 其实 `anaconda` 已经自带了 `MKL`, 但不不妨这里再装一下。首先去下面的链接下载学生版 `MKL`
@@ -335,13 +340,17 @@ sudo apt-get install libatlas-base-dev
 ## 十、安装 Boost
 
 进入 `Boost` 的官方网站 <http://www.boost.org/> 下载安装包。按照官方指南进行安装。
-最简单的方法是直接在 `ubuntu` 的软件仓库里搜索 `libboost`。
+最简单的方法是直接在 `ubuntu` 的软件仓库里搜索 `libboost`。也在可以用 `apt-get` 安装:
 
+```
+sudo apt-get install libboost-all-dev
+```
+其实这一步可以放到下一节来做。 
 -------------------------------------------------
 
 ## 十一、其他依赖库
 
-按照 <http://caffe.berkeleyvision.org/install_apt.html> 进行:
+按照 [官方指南](http://caffe.berkeleyvision.org/install_apt.html) 进行:
 
 ```
 sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler

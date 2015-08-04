@@ -254,7 +254,15 @@ echo "LDPRELOAD is:"
 echo $LD_PRELOAD
 /home/coldmoon/MATLAB/R2014b/bin/matlab
 ```
+---
 
+## 13) 
+*** Check failure stack trace: ***
+Aborted (core dumped)
+make: *** [pytest] Error 134
 
+`makefile`里如果 `WITH_PYTHON_LAYER` 被注释，则会出现上述错误。
 
+当前无法在 `WITH_PYTHON_LAYER` 被打开的情况下通过 `pytest` 测试。
+[#2093](https://github.com/BVLC/caffe/issues/2093)追踪了这一问题。只要 `#2093` 处于 `Open` 状态，那这个问题就还没有被解决。
 
