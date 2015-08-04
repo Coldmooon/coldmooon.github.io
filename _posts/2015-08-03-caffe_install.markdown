@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "从零安装 Caffe"
+subtitle:   "Install Caffe in Ubuntu 14.04 from scratch"
 date:       2015-08-03 23:16:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
@@ -30,6 +31,7 @@ header-img: "img/home-bg.jpg"
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
+sudo apt-get install gcc-4.9
 sudo apt-get install g++-4.9
 ```
 此时，系统默认使用的还是 `gcc 4.8`。如果想把 `gcc 4.9` 设为默认, 必须要重新做一下软连接
@@ -108,15 +110,15 @@ GCC version:  gcc version 4.9.2 (Ubuntu 4.9.2-0ubuntu1~14.04)
 从 <https://developer.nvidia.com/cuda-downloads> 下载对应的 `deb`包。然后双击，在软件中心里安装。
 此时并没有完成安装，`deb` 包只是告诉系统去哪里下载 `cuda` 而已。
 
-```
-Why doesn't the cuda-repo package install the CUDA Toolkit and Drivers?
+> Why doesn't the cuda-repo package install the CUDA Toolkit and Drivers?
+>
+> When using RPM or Deb, the downloaded package is a repository package. Such
+> a package only informs the package manager where to find the actual installation
+> packages, but will not install them.
+>
+> CUDA_Getting_Started_Linux.pdf
 
-When using RPM or Deb, the downloaded package is a repository package. Such
-a package only informs the package manager where to find the actual installation
-packages, but will not install them.
 
-                                          ---- CUDA_Getting_Started_Linux.pdf
-```
 接下来输入下列命令安装 `cuda`:
 
 ```
@@ -223,7 +225,7 @@ In [23]: a = np.random.random((4096, 4096))
 <http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/>
 <http://karytech.blogspot.hu/2012/05/opencv-24-on-ubuntu-1204.html>
 
-其中 ffmepg　的安装需要注意。如果按照第一个链接里的方法，先卸载再重新安装 ffmepg 的话，在某些机器机器上可以编译通过 opencv，但在另一些机器上就会出错(两种情况我都遇到了。。)。出错的解决方法是自己下载 ffmepg，从源码开始编译。具体参照下面两个帖子:
+其中 `ffmepg`的安装需要注意。如果按照第一个链接里的方法，先卸载再重新安装 `ffmepg` 的话，在某些机器机器上可以编译通过 `opencv`，但在另一些机器上就会出错(两种情况我都遇到了。。)。出错的解决方法是自己下载 `ffmepg`，从源码开始编译。具体参照下面两个帖子:
 <http://stackoverflow.com/questions/28319376/installing-opencv-in-ubuntu-14-10>
 <http://stackoverflow.com/questions/26592577/installing-opencv-in-ubuntu-14-10>
 
