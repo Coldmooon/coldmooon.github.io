@@ -170,6 +170,31 @@ sudo ln -s /usr/local/lib/libcudnn.so.6.5 /usr/local/lib/libcudnn.so
 
 sudo ldconfig
 ```
+**注意:** 检查一下刚刚拷贝到 `/usr/local/lib` 下的 `libcudnn.so` 的文件权限。
+
+```
+$ ls -l *cudnn*
+
+lrwxrwxrwx 1 root root       33  8月  4 22:05 libcudnn.so -> /usr/local/lib/libcudnn.so.6.5.48
+lrwxrwxrwx 1 root root       18  8月  4 22:09 libcudnn.so.6.5 -> libcudnn.so.6.5.48
+-rw------- 1 root root 11172416  8月  2 23:18 libcudnn.so.6.5.48
+-rw------- 1 root root 11623922  8月  2 23:19 libcudnn_static.a
+```
+从上面的显示结果可以看到，`libcudnn.so.6.5.48` 对于 `others` 用户是没有读取权限的，这会导致编译 `caffe`时出现下列错误: 
+
+```
+AR -o .build_release/lib/libcaffe.a
+LD -o .build_release/lib/libcaffe.so
+/usr/bin/ld: cannot find -lcudnn
+collect2: error: ld returned 1 exit status
+make: *** [.build_release/lib/libcaffe.so] Error 1
+```
+
+解决方法很简单，只要赋予 `others` 可读(写)权限即可:
+
+```
+sudo chmod 755 libcudnn.so.6.5.48
+```
 
 ---------------------------------------------------
 
