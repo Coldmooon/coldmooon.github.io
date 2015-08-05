@@ -168,7 +168,7 @@ Use 'apt-get autoremove' to remove them.
 
 ## 五、安装 cudnn
 
-从官方网站下载 `cudnn` 后解压。得到的文件是 `.h` 和 `.so` 文件。所以，直接把他们拷贝到 `/usr/local/include` 和  `/usr/local/lib/` 下就好了。
+如果电脑没有 `nvidia` 的显卡，此步跳过。从官方网站下载 `cudnn` 后解压。得到的文件是 `.h` 和 `.so` 文件。所以，直接把他们拷贝到 `/usr/local/include` 和  `/usr/local/lib/` 下就好了。
 
 ```
 sudo cp cudnn.h /usr/local/include
@@ -443,31 +443,119 @@ $ sudo ldconfig
 
 ## 十二、编辑 Caffe makefile 文件:
 
-重点要改的地方:
+重点要改的地方，电脑有 `nvidia` 显卡的配置:
 
 ```
+# cuDNN acceleration switch (uncomment to build with cuDNN).
 USE_CUDNN := 1
 
+# CPU-only switch (uncomment to build without GPU support).
+# CPU_ONLY := 1
+
+# To customize your choice of compiler, uncomment and set the following.
+# N.B. the default for Linux is g++ and the default for OSX is clang++
+# CUSTOM_CXX := g++
+
+# CUDA directory contains bin/ and lib/ directories that we need.
+CUDA_DIR := /usr/local/cuda
+# On Ubuntu 14.04, if cuda tools are installed via
+# "sudo apt-get install nvidia-cuda-toolkit" then use this instead:
+# CUDA_DIR := /usr
+
+# CUDA architecture setting: going with all of them.
+# For CUDA < 6.0, comment the *_50 lines for compatibility.
+CUDA_ARCH := -gencode arch=compute_20,code=sm_20 \
+                -gencode arch=compute_20,code=sm_21 \
+                -gencode arch=compute_30,code=sm_30 \
+                -gencode arch=compute_35,code=sm_35 \
+                -gencode arch=compute_50,code=sm_50 \
+                -gencode arch=compute_50,code=compute_50
+
+# BLAS choice:
+# atlas for ATLAS (default)
+# mkl for MKL
+# open for OpenBlas
 BLAS := mkl
+# Custom (MKL/ATLAS/OpenBLAS) include and lib directories.
+# Leave commented to accept the defaults for your choice of BLAS
+# (which should work)!
+# BLAS_INCLUDE := /path/to/your/blas
+# BLAS_LIB := /path/to/your/blas
 
-MATLAB_DIR := /path/to/matlab/
+# MATLAB directory should contain the mex binary in /bin.
+MATLAB_DIR := /home/your_username/MATLAB/R2014b
+# MATLAB_DIR := /Applications/MATLAB_R2012b.app
 
-注释掉下面这一行:
 # PYTHON_INCLUDE := /usr/include/python2.7 \
-#		/usr/lib/python2.7/dist-packages/numpy/core/include
-
+#               /usr/lib/python2.7/dist-packages/numpy/core/include
+# Anaconda Python distribution is quite popular. Include path:
+# Verify anaconda location, sometimes it's in root.
 ANACONDA_HOME := $(HOME)/anaconda
 PYTHON_INCLUDE := $(ANACONDA_HOME)/include \
-		$(ANACONDA_HOME)/include/python2.7 \
-		$(ANACONDA_HOME)/lib/python2.7/site-packages/numpy/core/include \
+                $(ANACONDA_HOME)/include/python2.7 \
+                $(ANACONDA_HOME)/lib/python2.7/site-packages/numpy/core/include \
 
+# We need to be able to find libpythonX.X.so or .dylib.
 # PYTHON_LIB := /usr/lib
 PYTHON_LIB := $(ANACONDA_HOME)/lib
 
-OSX 10.10 下配置，ubuntu 14.04 类似:
-# Whatever else you find you need goes here.
-INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include
-LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /Applications/MATLAB_R2014b.app/bin/maci64 /usr/lib
+# Uncomment to support layers written in Python (will link against Python libs)
+# WITH_PYTHON_LAYER := 1
+```
+电脑没有 `nvidia` 显卡的配置:
+
+```
+# cuDNN acceleration switch (uncomment to build with cuDNN).
+# USE_CUDNN := 1
+
+# CPU-only switch (uncomment to build without GPU support).
+CPU_ONLY := 1
+
+# To customize your choice of compiler, uncomment and set the following.
+# N.B. the default for Linux is g++ and the default for OSX is clang++
+# CUSTOM_CXX := g++
+
+# CUDA directory contains bin/ and lib/ directories that we need.
+# CUDA_DIR := /usr/local/cuda
+# On Ubuntu 14.04, if cuda tools are installed via
+# "sudo apt-get install nvidia-cuda-toolkit" then use this instead:
+# CUDA_DIR := /usr
+
+# CUDA architecture setting: going with all of them.
+# For CUDA < 6.0, comment the *_50 lines for compatibility.
+# CUDA_ARCH := -gencode arch=compute_20,code=sm_20 \
+#                 -gencode arch=compute_20,code=sm_21 \
+#                 -gencode arch=compute_30,code=sm_30 \
+#                 -gencode arch=compute_35,code=sm_35 \
+#                 -gencode arch=compute_50,code=sm_50 \
+#                 -gencode arch=compute_50,code=compute_50
+
+...
+
+其余部分保持不变
+```
+接下来编译。
+
+------------------------
+
+## 十三、编译
+
+在终端下输入:
+
+```
+$ make all -j 8
+$ make test -j 8
+$ make runtest -j 8
 ```
 
-接下来编译。(未完待续)
+接下来编译 `python` 接口和 `matlab` 接口:
+
+```
+$ make pycaffe -j 8
+```
+```
+$ make matcaffe -j 8
+```
+在编译过程中如果遇到错误，可以在上一篇文章里搜索一下。
+
+---------------
