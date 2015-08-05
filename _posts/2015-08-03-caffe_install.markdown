@@ -370,7 +370,7 @@ alias matlab="/path/to/matlab.sh"
 安装过程不说了，基本直接下一步就可以了。接下来配置环境:
 
 ```
-sudo gedit /etc/ld.so.conf.d/intel_mkl.conf
+sudo vim /etc/ld.so.conf.d/intel_mkl.conf
 
 输入:
 /opt/intel/lib/intel64
