@@ -49,6 +49,18 @@ Thread model: posix
 gcc version 4.9.2 (Ubuntu 4.9.2-0ubuntu1~14.04) 
 ```
 
+**注意**: 在编译 `matcaffe` 接口时，可能会出现警告:
+
+```
+$ make matcaffe -j 8
+MEX matlab/+caffe/private/caffe_.cpp
+Building with 'g++'.
+
+Warning: You are using gcc version '4.9.2-0ubuntu1~14.04)'. The version of gcc is not supported. The version currently supported with MEX is '4.7.x'. For a list of currently supported compilers see: http://www.mathworks.com/support/compilers/current_release.
+MEX completed successfully.
+```
+暂且忽略它, 后面我会做一些配置。反正我目前在 `ubuntu 14.04` 和 `OSX 10.10` 两个系统里用 `gcc-4.9` 做 `RCNN` 实验没遇到问题。
+
 参考链接:
 <http://askubuntu.com/questions/428198/getting-installing-gcc-g-4-9-on-ubuntu>
 
@@ -200,7 +212,7 @@ sudo chmod 755 libcudnn.so.6.5.48
 
 
 ## 六、安装 anaconda
-强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，`ipython`, `mkl`, `numpy`等都预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 `anaconda accelerate`，在矩阵运算的时候，可以启用并行计算，速度快很多。
+强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，`ipython`, `mkl`, `numpy`等都预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 [anaconda accelerate](https://store.continuum.io/cshop/academicanaconda)，在矩阵运算的时候，可以启用并行计算，速度快很多。
 
 ```
 安装 anaconda:
@@ -315,12 +327,40 @@ export PATH="/path/to/matlab:$PATH"
 alias matlab='/path/to/matlab'
 ```
 
-方法 2) 的优势是，可让 `matlab` 调用一些指定的库文件。因为，`matlab` 在启动时，会优先读取自带的 `opencv` 库，而不读取系统中安装好的 `opencv 2.4.11` 库。在这种情况下做 `RCNN` 的实验，就可能报错。所以我在 `Mac OSX 10.10` 下，做了如下 alias，`ubuntu` 下可以照葫芦画瓢:
+方法 2) 的优势是，可让 `matlab` 调用一些指定的库文件。因为，`matlab` 在启动时，会优先读取自带的 `opencv` 库，而不读取系统中安装好的 `opencv 2.4.11` 库。在这种情况下做 `RCNN` 的实验，就可能报错。
+
+所以我在 `Mac OSX 10.10` 下，做了如下 alias:
 
 ```
 alias rcnn="DYLD_INSERT_LIBRARIES=/usr/local/lib/libopencv_highgui.2.4.dylib:/usr/local/lib/libtiff.5.dylib /Applications/MATLAB_R2014b.app/bin/matlab"
 ```
 以后要做 `Rcnn` 实验的时候，只需要在终端里输入 `rcnn` 就可以启动 `matlab` 并优先读取自己安装的 `opencv 2.4.11` 库。
+
+而在 `Ubuntu 14.04` 里，我先建立了一个 `matlab` 脚本，用来启动 `matlab`:
+
+```
+$ vim matlab.sh
+```
+键入下面的内容，用户名改成自己的:
+
+```
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+/home/your_username/MATLAB/R2014b/bin/matlab
+```
+然后按 `:wq` 保存。再赋予可执行权限:
+
+```
+$ sudo chmod 777 matlab.sh
+```
+接下来在 `.bashrc` 中建立一个 `alias`，指向刚才建立的脚本:
+
+```
+vim ~/.bashrc
+
+增加:
+alias matlab="/path/to/matlab.sh"
+```
+以后在终端里输入 `matlab` 即可启动, 并预先读取 `libstdc++.so.6` 这个库，以防止出错。当然，如果在你的电脑上不出错的话，那就不需要这么干了。直接按照本节开头的 1), 2) 操作即可。
 
 ----------------------------
 
@@ -355,6 +395,11 @@ $ make install PREFIX=your_directory
 ```
 注意，如果这里自己选择安装目录，则在编译 `Caffe` 的时候，会提示找不到 `OpenBLAS`的库文件，此时，需要进一步设置 `LD_LIBRARY_PATH` 才行。
 
+```
+根据具体的安装路径设置:
+export LD_LIBRARY_PATH=/opt/OpenBLAS/lib
+```
+
 ### -- Atlas
 
 ```
@@ -384,7 +429,7 @@ sudo apt-get install --no-install-recommends libboost-all-dev
 ```
 sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
 ```
-如果安装过 `andconda`，那 `libhdf5-serial-dev` 可以不装。
+安装过 `anaconda` 的话，那 `libhdf5-serial-dev` 可以不装。如果编译时提示找不到 `hdf5` 的库。就把 `anaconda/lib` 加到 `ld.so.conf` 中去。
 
 ------------------------------------
 
