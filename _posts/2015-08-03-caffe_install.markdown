@@ -68,7 +68,7 @@ MEX completed successfully.
 
 ## 三、安装 nvidia 显卡驱动
 
-如果电脑没有 nvidia 的显卡，此步跳过。
+如果电脑没有 `nvidia` 的显卡，此步跳过。
 
 网上的许多教程都指出要进入 `tty`，然后把 `lightdm` 关了。但我发现直接用 `apt-get` 安装的话，无需关闭 `lightdm`。
 
@@ -77,6 +77,7 @@ sudo add-apt-repository ppa:xorg-edgers/ppa
 sudo apt-get update
 sudo apt-get install nvidia-352 nvidia-settings nvidia-prime
 ```
+**重启电脑。**
 
 若要安装其他版本的驱动，则输入:
 
@@ -96,7 +97,6 @@ sudo apt-get install nvidia-current
 $ prime-select query
 nvidia
 ```
-
 输入 `cat /proc/driver/nvidia/version` 查看正在使用的 `nvidia` 驱动版本和编译时采用的 `gcc` 版本
 
 ```
@@ -119,8 +119,7 @@ GCC version:  gcc version 4.9.2 (Ubuntu 4.9.2-0ubuntu1~14.04)
 
 如果电脑没有 `nvidia` 的显卡，此步跳过。有人说即使电脑上没有 `nvidia` 显卡也必须装 `cuda`, 否则会出问题。但我亲自实验过，完全可以不装 `cuda`。但必须在 `makefile` 文件中把 `CPU_ONLY := 1` 打开。并且不能使用 `cuda` 相关函数。如果使用 `cuda` 相关函数，则会报错。
 
-从 <https://developer.nvidia.com/cuda-downloads> 下载对应的 `deb`包。然后双击，在软件中心里安装。
-此时并没有完成安装，`deb` 包只是告诉系统去哪里下载 `cuda` 而已。
+从 [`cuda` 官方网站](https://developer.nvidia.com/cuda-downloads) 下载对应的 `deb`包。然后双击，在软件中心里安装。此时并没有完成安装，`deb` 包只是告诉系统去哪里下载 `cuda` 而已。
 
 > Why doesn't the cuda-repo package install the CUDA Toolkit and Drivers?
 >
@@ -129,7 +128,6 @@ GCC version:  gcc version 4.9.2 (Ubuntu 4.9.2-0ubuntu1~14.04)
 > packages, but will not install them.
 >
 > CUDA_Getting_Started_Linux.pdf
-
 
 接下来输入下列命令安装 `cuda`:
 
@@ -143,7 +141,6 @@ sudo apt-get install cuda
 export PATH=/usr/local/cuda-7.0/bin:$PATH    
 export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LD_LIBRARY_PATH    
 ```
-
 另外，我发现上面的 `export` 操作在我电脑上不起作用。所以我直接把 `lib64` 里的库文件软连接到了 `/usr/local/lib/` 下 
 
 PS: 安装 `cuda` 后，或许之前安装的显卡驱动会被 `cuda` 里的驱动覆盖掉一部分。此时不妨再次运行显卡驱动安装命令来检查一下是不是有需要重新安装的部分:
@@ -182,7 +179,7 @@ sudo ln -s /usr/local/lib/libcudnn.so.6.5 /usr/local/lib/libcudnn.so
 
 sudo ldconfig
 ```
-**注意:** 检查一下刚刚拷贝到 `/usr/local/lib` 下的 `libcudnn.so` 的文件权限。
+**注意:** 检查一下刚刚拷贝到 `/usr/local/lib` 下的 `libcudnn.so.6.5.48` 的文件权限。
 
 ```
 $ ls -l *cudnn*
@@ -201,7 +198,6 @@ LD -o .build_release/lib/libcaffe.so
 collect2: error: ld returned 1 exit status
 make: *** [.build_release/lib/libcaffe.so] Error 1
 ```
-
 解决方法很简单，只要赋予 `others` 可读(写)权限即可:
 
 ```
@@ -212,7 +208,7 @@ sudo chmod 755 libcudnn.so.6.5.48
 
 
 ## 六、安装 anaconda
-强烈推荐使用 `anaconda` 的 `python`，它里面集成了很多包，`ipython`, `mkl`, `numpy`等都预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 [anaconda accelerate](https://store.continuum.io/cshop/academicanaconda)，在矩阵运算的时候，可以启用并行计算，速度快很多。
+强烈推荐使用 `anaconda` 的 `python`。它里面集成了很多包，`ipython`, `mkl`, `numpy`等都预装了， 省去了很多麻烦。如果有 edu 邮箱的话，还可以获得 [`anaconda accelerate`](https://store.continuum.io/cshop/academicanaconda)，在矩阵运算的时候，可以启用并行计算，速度快很多。
 
 ```
 安装 anaconda:
@@ -314,7 +310,7 @@ Output file =>
 
 ## 八、安装 Matlab
 安装 `matlab` 的过程这里不赘述，重点说下安装后做的事:
-提供两种方法实现在 `terminal` 中启动 `matlab`
+提供两种方法实现在 `terminal` 中启动 `matlab`:
 
 1） 将 `matlab` 的可执行程序加入到系统的环境变量中
 
@@ -327,7 +323,7 @@ export PATH="/path/to/matlab:$PATH"
 alias matlab='/path/to/matlab'
 ```
 
-方法 2) 的优势是，可让 `matlab` 调用一些指定的库文件。因为，`matlab` 在启动时，会优先读取自带的 `opencv` 库，而不读取系统中安装好的 `opencv 2.4.11` 库。在这种情况下做 `RCNN` 的实验，就可能报错。
+方法 2) 的优势是，`matlab` 在启动时可以调用一些指定的库文件。因为，`matlab` 在启动时，会优先读取自带的 `opencv` 库，而不读取系统中安装好的 `opencv 2.4.11` 库。在这种情况下做 `RCNN` 的实验，就可能报错。
 
 所以我在 `Mac OSX 10.10` 下，做了如下 alias:
 
@@ -360,7 +356,7 @@ vim ~/.bashrc
 增加:
 alias matlab="/path/to/matlab.sh"
 ```
-以后在终端里输入 `matlab` 即可启动, 并预先读取 `libstdc++.so.6` 这个库，以防止出 `GLIBCXX_3.4.20` 相关错误。出错的原因分析太长了，请看[上一篇文章的第 12 ](http://coldmooon.github.io/2015/07/09/caffe/)，里面有详细记载。
+以后在终端里输入 `matlab` 即可启动, 并预先读取 `libstdc++.so.6` 这个库，以防止出现 `GLIBCXX_3.4.20` 相关错误。出错的原因分析太长了，请看[上一篇文章的第 12 ](http://coldmooon.github.io/2015/07/09/caffe/)，里面有详细记载。
 
 当然，如果在你的电脑上不出错的话，那就不需要这么干了。直接按照本节开头的 1), 2) 操作即可。
 
@@ -385,10 +381,10 @@ sudo ldconfig
 ```
 
 ### -- Openblas
-去官方网站 <http://www.openblas.net/> 下载 `OpenBLAS` 的安装包，解压。进入安装目录，在终端输入
+去[官方网站](http://www.openblas.net/) 下载 `OpenBLAS` 的安装包，解压。进入安装目录，在终端输入
 
 ```
-$ make -j 4
+$ make -j 8
 ```
 安装成功之后，继续在终端输入
 
@@ -432,6 +428,16 @@ sudo apt-get install --no-install-recommends libboost-all-dev
 sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
 ```
 安装过 `anaconda` 的话，那 `libhdf5-serial-dev` 可以不装。如果编译时提示找不到 `hdf5` 的库。就把 `anaconda/lib` 加到 `ld.so.conf` 中去。
+
+```
+$ sudo vim /etc/ld.so.conf
+
+添加一行,用户名改为你自己的:
+/home/your_username/anaconda/lib
+关闭并保存文件。
+
+$ sudo ldconfig
+```
 
 ------------------------------------
 
