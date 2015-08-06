@@ -609,3 +609,9 @@ $ nvidia-settings
 ```
 **-- 水冷系统**
 一块显卡就需要一个水冷，每个水冷最低也是900元以上，我也没玩过这么高端的设备。大家自己研究吧。
+
+参考链接:
+https://devtalk.nvidia.com/default/topic/820497/-solved-coolbits-without-xorg-conf-/
+http://www.phoronix.com/scan.php?px=MTY1OTM&page=news_item
+https://www.gpugrid.net/forum_thread.php?id=2925
+http://askubuntu.com/questions/61396/how-do-i-install-the-nvidia-drivers
