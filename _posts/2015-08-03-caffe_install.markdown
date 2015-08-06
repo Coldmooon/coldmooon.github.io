@@ -615,4 +615,3 @@ https://devtalk.nvidia.com/default/topic/820497/-solved-coolbits-without-xorg-co
 http://www.phoronix.com/scan.php?px=MTY1OTM&page=news_item
 https://www.gpugrid.net/forum_thread.php?id=2925
 http://askubuntu.com/questions/61396/how-do-i-install-the-nvidia-drivers
-https://timdettmers.wordpress.com/2015/03/09/deep-learning-hardware-guide/
