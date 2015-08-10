@@ -560,23 +560,27 @@ $ make matcaffe -j 8
 
 --------------------------
 
-## 十四、散热系统
+## 十四、散热系统（建议不要跳过本节内容）
 
 无论是做计算，还是玩游戏，散热都是极其重要的。CPU 或 GPU 的温度一旦达到了设定的阈值，它们就开始自动降频。于是 i7 变赛扬，Titan X 变集显。。所以，如果不好好处理，散热系统很容易成为整个电脑性能的瓶颈。
 
-现在主流的散热方式是风冷和水冷。水冷的效果好，静音，但是成本高，需要一定的动手能力。风冷要便宜一些，但是噪音大，并且需要高档点的机箱来构造`风道`。
+现在主流的散热方式是风冷和水冷。水冷的效果好，静音，但是成本高，需要一定的动手能力。风冷要便宜一些，但是噪音大，并且需要高档点的机箱来构造`风道`。大部分人使用的还是风冷。所以接下来重点讲一下 `Nvidia GPU` 的风冷。
 
-**-- `nvidia` 显卡的风冷:**
-大家用的一般都是 `nvidia` 的游戏卡，例如 `Titan X`。这类显卡主要为游戏优化，其 `BIOS` 的温度阈值设定并不适合深度学习。所以，我们必须自己控制风扇速度。在 `windows` 下控制温度阈值很简单，一般正规的厂商，如华硕、技嘉、微星，都会配送显卡超频软件，可以自己 “画” 温控曲线。这里重点说下如何在 `Ubuntu 14.04` 下控制风扇转速:
+**-- GPU 的风冷:**
+大家用的一般都是 `nvidia` 的游戏卡，例如 `Titan X`。这类显卡主要为游戏优化，其 `BIOS` 的温度阈值设定并不适合深度学习。所以，我们必须自己控制风扇速度。在 `windows` 下控制温度阈值很简单，一般正规的厂商，如华硕、技嘉、微星，都会配送显卡超频软件，可以自己 “画” 温控曲线。而在 `Ubuntu 14.04` 下控制风扇转速就要稍微麻烦些:
 
-在 `Ubuntu 14.04` 下控制显卡风扇转速有两种方法。一种是刷修改版的 `BIOS`，改变温度阈值；一种是将 `xorg.conf` 文件的 `coolbits` 字段打开。说下第二种方法:
+在 `Ubuntu 14.04` 下控制显卡风扇转速有两种方法:
+   1. 刷修改版的 `BIOS`，改变温度阈值；
+   2. 将 `xorg.conf` 文件的 `coolbits` 字段打开。
 
-装好 `nvidia` 显卡驱动后，在终端下输入:
+介绍第二种方法:
+
+首先打开 `coolbits` 字段。装好 `nvidia` 显卡驱动后，在终端下输入:
 
 ```
 $ nvidia-xconfig
 ```
-这时，会在 `/etc/X11/` 下自动生成 `xorg.conf` 文件。我们要做的就是在 `xorg.conf` 文件里，将 `coolbits` 字段打开。于是，在终端下输入:
+这时，会在 `/etc/X11/` 下自动生成 `xorg.conf` 文件。我们要做的就是在 `xorg.conf` 文件里，给 `coolbits` 字段设定一个值。于是，在终端下输入:
 
 ```
 $ cd /etc/X11
@@ -598,17 +602,31 @@ $ nvidia-settings
 = 
 28(超频太猛的话，可能会烧坏你的显卡)...
 ```
+除了在显卡控制界面里修改风扇转速外，还可以使用命令行控制，这在用 `SSH` 远程登录时非常有用:
+
+```
+查询显卡当前状态
+nvidia-smi
+
+仅仅读取 GPU 温度:
+nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader
+
+查询与 GPU 风扇相关的关键字，例如风扇的转速等
+nvidia-settings -q all | grep Fan
+
+设定风扇转速
+nvidia-settings -a "[gpu:0]/GPUFanControlState=1" -a "[fan:0]/GPUTargetFanSpeed=70" 
+```
 **-- CPU 的风冷**
 `Haswell` 架构的 CPU 能耗做的不是很好，普遍发热都很严重。如果用 `i7 4790k` 做计算的话，一般的散热器都压不住温度。不用水冷的话，可以选大霜塔或猫头鹰等散热器。次一点的可以选玄冰400。整个机箱风道的构造是，机箱前进风，后、上出风：
 
 ```
+机箱风道:
 -----------
 | ⬅️ ⬆️    |
 | ️      ⬅️ |
 |----------
 ```
-**-- 水冷系统**
-一块显卡就需要一个水冷，每个水冷最低也是900元以上，我也没玩过这么高端的设备。大家自己研究吧。
 
 参考链接:
 <https://timdettmers.wordpress.com/2015/03/09/deep-learning-hardware-guide/>
@@ -616,3 +634,5 @@ $ nvidia-settings
 <http://www.phoronix.com/scan.php?px=MTY1OTM&page=news_item>
 <https://www.gpugrid.net/forum_thread.php?id=2925>
 <http://askubuntu.com/questions/61396/how-do-i-install-the-nvidia-drivers>
+https://devtalk.nvidia.com/default/topic/821563/linux/can-t-control-fan-speed-with-beta-driver-349-12/2/
+http://discourse.ubuntu.com/t/lets-burn-it-nvidia-overcloking-now-available-on-linux/1610
