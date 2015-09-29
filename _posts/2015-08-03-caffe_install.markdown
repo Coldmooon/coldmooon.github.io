@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "从零安装 Caffe"
-subtitle:   "Install Caffe in Ubuntu 14.04 from scratch"
+subtitle:   "Install Caffe in Ubuntu 14.04 from Scratch"
 date:       2015-08-03 23:16:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
@@ -73,10 +73,17 @@ MEX completed successfully.
 网上的许多教程都指出要进入 `tty`，然后把 `lightdm` 关了。但我发现直接用 `apt-get` 安装的话，无需关闭 `lightdm`。
 
 ```
-sudo add-apt-repository ppa:xorg-edgers/ppa
+sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt-get update
 sudo apt-get install nvidia-352 nvidia-settings nvidia-prime
 ```
+
+> 注意：
+> 之前的第三方源 `xorg-edgers` 已经被ubuntu 和 nvidia 合作的官方源
+> `graphics-drivers` 代替。无法通过下列命令添加的 xorg-edgers 源来安装新驱动。
+> sudo add-apt-repository ppa:xorg-edgers/ppa
+
+
 **重启电脑。**
 
 若要安装其他版本的驱动，则输入:

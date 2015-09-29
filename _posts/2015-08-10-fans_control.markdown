@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "控制远程服务器上 Nvidia 显卡的风扇转速"
-subtitle:   "fan control of Nvidia video card over ssh"
+subtitle:   "Fan Control of Nvidia Video Card over SSH"
 date:       2015-08-10 15:03:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
