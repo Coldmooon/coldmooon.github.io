@@ -79,10 +79,8 @@ sudo apt-get install nvidia-352 nvidia-settings nvidia-prime
 ```
 
 > 注意：
-> 之前的第三方源 `xorg-edgers` 已经被ubuntu 和 nvidia 合作的官方源
-> `graphics-drivers` 代替。无法通过下列命令添加的 xorg-edgers 源来安装新驱动。
-> sudo add-apt-repository ppa:xorg-edgers/ppa
-
+> 之前的第三方源 `xorg-edgers` 已经被 ubuntu 和 nvidia 合作的官方源
+> `graphics-drivers` 代替。现在已经无法通过 xorg-edgers 源来安装新驱动。见链接: [[1]](http://www.omgubuntu.co.uk/2015/08/ubuntu-nvidia-graphics-drivers-ppa-is-ready-for-action), [[2]](http://askubuntu.com/questions/655322/i-want-to-install-nvidia-module-352-30-on-ubuntu-14-04-2-video-cards-intel-and)
 
 **重启电脑。**
 
