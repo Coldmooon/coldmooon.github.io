@@ -116,6 +116,7 @@ GCC version:  gcc version 4.9.2 (Ubuntu 4.9.2-0ubuntu1~14.04)
 <http://ubuntuhandbook.org/index.php/2015/04/install-nvidia-driver-346-59-in-ubuntu-from-ppa/>
 <http://www.binarytides.com/install-nvidia-drivers-ubuntu-14-04/>
 <http://my.oschina.net/eechen/blog/227134>
+https://devtalk.nvidia.com/default/topic/810964/linux/black-screen-after-prime-select-nvidia-and-log-out-using-v346-35-drivers/2/
 
 ---------------------------------
 
@@ -310,6 +311,11 @@ compiling
 Please compile only .c or .cpp files
 Output file => 
 ```
+
+其他可选教程：
+https://nusharex.wordpress.com/2015/06/01/18/
+快捷安装脚本：
+https://gist.github.com/Coldmooon/c2e146bb7e960556e055
 
 ----------------------
 
@@ -583,7 +589,7 @@ $ make matcaffe -j 8
 首先打开 `coolbits` 字段。装好 `nvidia` 显卡驱动后，在终端下输入:
 
 ```
-$ nvidia-xconfig
+$ sudo nvidia-xconfig
 ```
 这时，会在 `/etc/X11/` 下自动生成 `xorg.conf` 文件。我们要做的就是在 `xorg.conf` 文件里，给 `coolbits` 字段设定一个值。于是，在终端下输入:
 

@@ -16,7 +16,7 @@ header-img: "img/home-bg.jpg"
 
 3. 用 `IDE` 写代码、编译和调试。这种方法与 1、2相比，要做许多配置，但是可以使用单步调试。
 
-本文主要介绍方法 3。
+本文主要介绍方法 3。方法 3 已经在 `OS X 10.11` 下测试成功。`Xcode` 版本是 7.0.1; `Caffe` 是 2015.10.15 的版本。对于 `Ubuntu 14.04` 下的 `eclipse`，完全可以采用相同的配置思路，只要所需的依赖库添加全了，都能编译通过。
 
 ## 二、使用 IDE 编译和调试 caffe 的 c++ 程序
 
@@ -71,21 +71,21 @@ Undefined symbols for architecture x86_64:
 ld: symbol(s) not found for architecture x86_64
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ```    
-这个错误是由于没有找到 `glog` 的库导致的。直接把 `glog` 的库加入到 `Xcode/Eclipse` 里即可解决。这个错误是解决了，不过除了 `glog` 之外，是不是需要加别的东西，怎么知道需要加什么？下面做个简单的分析。这对自己写 `makefile` 是有帮助的。
+这个错误是由于没有找到 `glog` 的库导致的。直接把 `glog` 的库加入到 `Xcode/Eclipse` 里即可解决。这个错误是解决了，不过除了 `glog` 之外，是不是需要加别的东西，怎么知道需要加什么？下面做个简单的分析。这对自己写 `Makefile` 是有帮助的。
 
 
 ### 分析
 
-如果我把 `classification.cpp` 这个文件放到 `caffe/examples` 这个目录下，并用 `caffe`自带的 `makefile` 编译的话，是可以顺利编译的。这说明我安装的各个依赖库是好的，出现错误只是因为 `IDE`的配置还不够完整。所以，我在[TzuTaLin](http://tzutalin.blogspot.tw/2015/05/caffe-on-ubuntu-eclipse-cc.html)的基础上做了进一步尝试。
+如果我把 `classification.cpp` 这个文件放到 `caffe/examples` 这个目录下，并用 `caffe`自带的 `Makefile` 编译的话，是可以顺利编译的。这说明我安装的各个依赖库是好的，出现错误只是因为 `IDE`的配置还不够完整。所以，我在[TzuTaLin](http://tzutalin.blogspot.tw/2015/05/caffe-on-ubuntu-eclipse-cc.html)的基础上做了进一步尝试。
 
-首先，`caffe` 的安装过程需要 `glog gflags protobuf leveldb snappy` 这些依赖库。那么在其 `makefile` 中一定会存在这些依赖库的调用。在 `makefile` 的 `172` 行中发现:
+首先，`caffe` 的安装过程需要 `glog gflags protobuf leveldb snappy` 这些依赖库。那么在其 [`Makefile`](https://github.com/BVLC/caffe/blob/master/Makefile) 中一定会存在这些依赖库的调用。在 `Makefile` 的 `172` 行中发现:
 
 ```
 LIBRARIES += glog gflags protobuf leveldb snappy \
 	lmdb boost_system hdf5_hl hdf5 m \
 	opencv_core opencv_highgui opencv_imgproc
 ```
-可见，`caffe` 所需的各个依赖库都存储在 `LIBRARIES` 这个变量中, `caffe` 编译 examples 的过程必定与 `LIBRARIES` 这个变量息息相关。所以，接下来专门搜索 `LIBRARIES` 这个关键字即可。在 `364` 行就会发现:
+可见，`caffe` 所需的各个依赖库都存储在 `LIBRARIES` 这个变量中。 `caffe` 编译 examples 的过程必定与 `LIBRARIES` 这个变量息息相关。所以，接下来专门搜索 `LIBRARIES` 这个关键字即可。在 `364` 行就会发现:
 
 ```
 LDFLAGS += $(foreach librarydir,$(LIBRARY_DIRS),-L$(librarydir)) $(PKG_CONFIG) \
@@ -114,9 +114,9 @@ dyld: Library not loaded: @rpath/libcaffe.so
 
 4) 然后右键项目名称，并选择 `Add Files to ...`，把下图中的库文件都加进去:
 
-![img](/img/compile_caffe_cpp/compile_caffe_cpp_03.jpg)
+![img](/img/compile_caffe_cpp/compile_caffe_cpp_07.jpg)
 
-后来我对上面的每个库分别测试了下，发现只需要添加 `libopencv_core`, `libopencv_highgui`, `libopencv_imgproc`, `libcaffe.so`, `libglog` 就够了，不需要把 `LIBRARIES` 变量中指定的所有依赖库都加进去。
+我对 `LIBRARIES` 变量中包含的所有依赖库分别测试了下。发现只需要添加 `libopencv_core`, `libopencv_highgui`, `libopencv_imgproc`, `libcaffe.so`, `libglog` 这几个就够了，不需要把 `LIBRARIES` 变量中指定的所有依赖库都加进去。
 
 5) 如果在编译安装 `caffe` 的时候，用的是 `libstdc++`， 那么在 `C++ Standard Library` 中选择 `libstdc++`。否则选择 `libc++`，如下图这样设置:
 
