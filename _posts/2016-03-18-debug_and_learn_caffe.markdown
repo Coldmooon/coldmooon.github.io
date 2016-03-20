@@ -13,27 +13,30 @@ header-img: "img/home-bg.jpg"
 ## 二、准备工作
 1）首先安装好各种依赖库，要确保能够按照官方教程，在 `OSX` 的终端下成功编译 `caffe`。这点做不到的话，在 `Xcode` 搞 `caffe` 就是天方夜谭。
 
-2）本人现在使用的系统版本是 `OS X EI Capitan 10.11.3`; `Xcode` 版本是 7.2.1 (7C1002)。在此之前的版本我也试过，都没问题。后续版本也应该适用。
+2）我现在使用的系统版本是 `OS X EI Capitan 10.11.3`; `Xcode` 版本是 7.2.1 (7C1002)。在此之前的版本我也试过，都没问题。后续版本也应该适用。
 
 ## 三、正式配置
 
 1) 新建项目
 
 先新建一个项目
-![img](/img/debug_and_learn_caffe_code/1.jpg)
 ![img](/img/debug_and_learn_caffe_code/2.jpg)
 
 完成之后，`Xcode` 会显示如下目录结构:
 ![img](/img/debug_and_learn_caffe_code/3.jpg)
+
 ![img](/img/debug_and_learn_caffe_code/4.jpg)
 
 2) 整理 `caffe` 源码
 
 将 `include` 下的 `caffe` 目录拷贝到项目中的 `CaffeLearning` 目录里，保持跟 `main.cpp` 处于同一级目录。
+
 ![img](/img/debug_and_learn_caffe_code/5.jpg)
 
 再将 `src/caffe` 和 `src/gtest` 同样拷贝到 `CaffeLearning` 目录里，保持跟 `main.cpp` 处于同一级目录。这时会提示 `caffe` 目录已经存在，然后选择 `Merge`。
+
 ![img](/img/debug_and_learn_caffe_code/6.jpg)
+
 ![img](/img/debug_and_learn_caffe_code/7.jpg)
 
 将 `tools/caffe.cpp` 拷贝到 `CaffeLearning` 目录里，保持跟 `main.cpp` 处于同一级目录。
@@ -50,14 +53,19 @@ header-img: "img/home-bg.jpg"
 
 
 现在所有所需的文件都已经准备好了，整体的目录结构如下:
+
 ![img](/img/debug_and_learn_caffe_code/8.jpg)
+
 ![img](/img/debug_and_learn_caffe_code/9.jpg)
 
 3）把 caffe 源码添加到 `xcode` 中
+
 ![img](/img/debug_and_learn_caffe_code/10.jpg)
+
 ![img](/img/debug_and_learn_caffe_code/11.jpg)
 
 先选下面这三个，classification.cpp 这个是测试阶段的代码，不用的话可以不添加； caffe.cpp 是训练+测试阶段的代码，我先选这个。然后把项目自带的 `main.cpp` 给删了。添加完之后，`Xcode` 应该有如下姿势:
+
 ![img](/img/debug_and_learn_caffe_code/12.jpg)
  
 3) 项目设置
@@ -65,6 +73,7 @@ header-img: "img/home-bg.jpg"
 ```
 -lopencv_core -lopencv_highgui -lopencv_imgproc -lglog -lhdf5 -lgflags -lprotobuf -lboost_system -lopenblas -lhdf5_hl -lleveldb -llmdb -lboost_filesystem -lm -lsnappy -lboost_thread-mt
 ```
+
 ![img](/img/debug_and_learn_caffe_code/13.jpg)
 
 
@@ -93,7 +102,7 @@ DEBUG=1 CPU_ONLY USE_OPENCV USE_LEVELDB USE_LMDB
 ```
 ![img](/img/debug_and_learn_caffe_code/16.jpg)
 
-## 开始调试和学习
+## 开始调试 Caffe
 
 1）训练阶段，就用 Cifar-10 作为例子吧
 进入官方的 cifar10 例子, [链接](http://caffe.berkeleyvision.org/gathered/examples/cifar10.html)。 然后按照操作一步步来。运行下面两个脚本生成数据库:
@@ -103,6 +112,7 @@ DEBUG=1 CPU_ONLY USE_OPENCV USE_LEVELDB USE_LMDB
 ```
 
 为了清晰起见，在 `CaffeLearning` 新建一个目录 `data`。将 `cifar10_quick_solver.prototxt`, `cifar10_quick_train_test.prototxt`, `cifar10_train_lmdb`, `cifar10_test_lmdb` 都拷贝到 `data` 目录下，如下图:
+
 ![img](/img/debug_and_learn_caffe_code/17.jpg)
 
 修改 `cifar10_quick_solver.prototxt`, `cifar10_quick_train_test.prototxt` 里的各个字段，使其对应到正确的路径。
@@ -113,6 +123,7 @@ train --solver /Users/Coldmoon/Developer/CaffeLearning/CaffeLearning/data/cifar1
 ```
 
 接下来在 `relu.cpp` 里设个断点，开始编译运行，就会发现，程序能够停在断点上了:
+
 ![img](/img/debug_and_learn_caffe_code/18.jpg)
 
 
