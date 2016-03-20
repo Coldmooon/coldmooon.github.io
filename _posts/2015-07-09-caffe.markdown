@@ -300,3 +300,28 @@ make: *** [.build_release/lib/libcaffe.so] Error 1
 ```
 sudo chmod 755 libcudnn.so.6.5.48
 ```
+
+## 15) Tiff 错误
+```
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFReadRGBAStrip@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFIsTiled@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFWriteScanline@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFGetField@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFScanlineSize@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFReadEncodedTile@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFReadRGBATile@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFClose@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFRGBAImageOK@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFOpen@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFReadEncodedStrip@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFSetField@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFSetWarningHandler@LIBTIFF_4.0'
+/usr/local/lib/libopencv_highgui.so: undefined reference to `TIFFSetErrorHandler@LIBTIFF_4.0'
+collect2: error: ld returned 1 exit status
+make: *** [.build_release/tools/extract_features.bin] Error 1
+```
+
+解决办法: 在 LD_LIBRARY_PATH 中删除含有 anaconda 的部分
+
+参考链接：
+https://groups.google.com/forum/#!msg/caffe-users/wKYe45FKSqE/HcFMlGS-M8gJ

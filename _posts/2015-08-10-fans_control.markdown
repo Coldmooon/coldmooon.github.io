@@ -80,6 +80,14 @@ ERROR: The control display is undefined; please run `nvidia-settings --help` for
 ```
 $ export DISPLAY=:0.0
 ```
+如果不行就输入
+
+```
+$ export DISPLAY=IP:0.0
+```
+大部分情况下，IP 可以省略不写，直接写 `export DISPLAY=:0.0`。但有时候省略不写会出错。这种情况下可以尝试 `export DISPLAY=127.0.0.1:0.0`。
+后面的 `0.0` 可以去 `/etc/ssh/sshd_config` 查看 `X11DisplayOffset` 这个选项。
+
 上述命令可以将 `nvidia-settings` 的信息输出到远程主机上。如果不这样做，将得到下列错误:
 
 ```
