@@ -2,26 +2,24 @@
 title: Coldmooon's Blog
 header-img: img/home-bg.jpg
 email: xxx@xxx.com
+copyright_name: 
 description: ""
 baseurl: ""
 url: "http://coldmooon.github.io"
 # twitter_username: SBootstrap
 github_username:  coldmooon
 # facebook_username:  IronSummitMedia
+email_username:  coldmon@qq.com
 
 # Build settings
 markdown: kramdown 
-
-# markdown: redcarpet
-# redcarpet can auto highlight code, but the lack of header-id make the catalog impossible 
-
-highlighter: pygments
+# highlighter: pygments
+highlighter: rouge
 permalink: pretty
 paginate: 20
 exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 
-# use Github Flavored Markdown !important
-# document: http://jekyllrb.com/docs/configuration/#kramdown
+gems: [jekyll-paginate, jekyll-feed]
 
-kramdown:
-  input: GFM
+# kramdown:
+#   input: GFM
