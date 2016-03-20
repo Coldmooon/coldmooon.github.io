@@ -2,7 +2,7 @@
 layout:     post
 title:      "在 Xcode 中调试和研究 caffe 源码"
 subtitle:   "Debug and learn Caffe code in Xcode"
-date:       2016-03-20 13:15:00
+date:       2016-03-19 13:15:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
 ---
