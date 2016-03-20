@@ -1,14 +1,14 @@
 ---
 layout:     post
-title:      "在 Xcode/Eclipse 中编译和调试 caffe 的 C++ 程序"
-subtitle:   "Compile and Debug Caffe C++ Code in Xcode/Eclipse"
+title:      "在 Xcode 中编译和调试 Caffe 的 C++ 程序 (非 Caffe 源代码)"
+subtitle:   "Compile and Debug Caffe C++ application in Xcode"
 date:       2015-08-14 23:23:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
 ---
 
 ## 一、前言
-本文主要介绍了如何在 `IDE` 中编译和调试 `caffe` 的 `c++` 程序（ `cpp` 文件）。编译 `caffe` 的 `c++` 程序至少有三种办法:
+本文主要介绍了如何在 `IDE` 中编译和调试 `caffe` 的 `c++` 程序（ `cpp` 文件）。注意是调试应用程序，而非 `caffe` 代码本身。下一篇文章才讲如何调试 `caffe` 源代码。编译 `caffe` 的 `c++` 程序至少有三种办法:
 
 1. 把写好的 `cpp` 文件放到 `caffe` 安装目录下的 `examples` 目录中。然后在终端下，进入 `caffe` 的安装目录。键入 `make all`， `caffe` 会自动识别新的 `example` 并编译。这种方法的优势是简单易行、行之有效。
 
