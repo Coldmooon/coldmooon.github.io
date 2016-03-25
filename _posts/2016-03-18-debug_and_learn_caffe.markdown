@@ -46,6 +46,7 @@ header-img: "img/home-bg.jpg"
  `caffe.pb.cc` 和 `caffe.pb.h` 拷贝到 `CaffeLearning/caffe/proto/` 里。
 
 生成 `caffe.pb.cc` 和 `caffe.pb.h` 的方法有两种:
+
 1) 在终端下进入 `caffe` 根目录中，然后输入 `make proto`。
 
 ```
