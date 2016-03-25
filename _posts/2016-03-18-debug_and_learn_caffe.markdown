@@ -47,6 +47,7 @@ header-img: "img/home-bg.jpg"
 
 生成 `caffe.pb.cc` 和 `caffe.pb.h` 的方法有两种:
 1) 在终端下进入 `caffe` 根目录中，然后输入 `make proto`。
+
 ```
 $ make proto
 PROTOC src/caffe/proto/caffe.proto
@@ -54,6 +55,7 @@ PROTOC src/caffe/proto/caffe.proto
 然后进入 `src/caffe/proto/` 下就会看到 `caffe.pb.cc` 和 `caffe.pb.h` 已经出现了。
 
 2) 直接采用 `protobuf` 编译出 `caffe.pb.cc` 和 `caffe.pb.h`:
+
 ```
 进入 caffe 根目录
 protoc --proto_path=src/caffe/proto --cpp_out=.build_release/src/caffe/proto src/caffe/proto/caffe.proto
