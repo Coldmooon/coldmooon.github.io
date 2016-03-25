@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "在 Xcode 中调试和研究 Caffe"
-subtitle:   "Debug and explorer Caffe in Xcode"
+subtitle:   "Debug and Explorer Caffe in Xcode"
 date:       2016-03-18 13:15:00
 author:     "Coldmooon"
 header-img: "img/home-bg.jpg"
