@@ -45,6 +45,24 @@ header-img: "img/home-bg.jpg"
 用 `protobuf` 编译 `caffe.proto` 文件，生成 `caffe.pb.cc` 和 `caffe.pb.h` 两个文件。然后将
  `caffe.pb.cc` 和 `caffe.pb.h` 拷贝到 `CaffeLearning/caffe/proto/` 里。
 
+生成 `caffe.pb.cc` 和 `caffe.pb.h` 的方法有两种:
+1) 在终端下进入 `caffe` 根目录中，然后输入 `make proto`。
+```
+$ make proto
+PROTOC src/caffe/proto/caffe.proto
+```
+然后进入 `src/caffe/proto/` 下就会看到 `caffe.pb.cc` 和 `caffe.pb.h` 已经出现了。
+
+2) 直接采用 `protobuf` 编译出 `caffe.pb.cc` 和 `caffe.pb.h`:
+```
+进入 caffe 根目录
+protoc --proto_path=src/caffe/proto --cpp_out=.build_release/src/caffe/proto src/caffe/proto/caffe.proto
+
+其中:
+--proto_path: caffe.proto 所在目录
+--cpp_out   : 输出目录
+```
+
 完成上面的工作后，`caffe` 的源代码都已经在 `Xcode` 目录中了。接下来要删掉几个无用的文件，进入`CaffeLearning` 目录里: 
 删掉 `CaffeLearning/gtest/gtest_main.cc`
 删掉 `CaffeLearning/caffe/test/test_caffe_main.cpp`
